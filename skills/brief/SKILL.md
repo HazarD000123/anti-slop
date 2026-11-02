@@ -19,6 +19,7 @@ Then write `BRIEF.md` with exactly these sections:
 - **Palette from a source:** every colour traced to something real: the logo, the product's UI, the avatar, the subject's world. One accent, used rarely enough to mean something. Tinted blacks, never pure `#000` or neutral grey by default.
 - **Two fonts on purpose:** one with character (a serif or a themed face) and one that disappears. Say what each is for. Never the framework default alone.
 - **One signature detail:** the single thing people will remember. Everything else stays quiet.
+- **Building blocks:** what comes from shadcn/ui and what the signature effect is built from (React Bits, Magic UI, 21st.dev, three.js). See the `components` skill.
 - **Motion:** one reveal, one easing, used once, under 24px of travel. If an animation carries no meaning, it doesn't exist. Honour `prefers-reduced-motion`.
 - **Page structure:** in the order this subject needs, not hero, three cards, testimonials, CTA.
 - **Real content list:** what's real and what's missing. Missing figures stay visibly unfinished and never get invented.

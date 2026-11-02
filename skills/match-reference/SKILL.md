@@ -21,4 +21,6 @@ Screenshots make you guess. Guessing gets radii, shadows and opacity measurably 
 
 Describe differences precisely: "rounded rectangle, not capsule", "translucent, not opaque", "glow only on buttons".
 
+If the reference uses a known component, look for it on 21st.dev, Magic UI or React Bits first (see the `components` skill), then match the measured values.
+
 See `references/recipes.md` for proven constructions.

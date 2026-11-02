@@ -1,8 +1,19 @@
 {
   "name": "anti-slop",
-  "version": "0.1.0",
-  "description": "Build websites with Claude that don't look AI-made: a real creative brief, reference matching from actual CSS, a slop audit and human copy.",
-  "author": { "name": "jojo" },
+  "version": "0.2.0",
+  "description": "Build websites with Claude that don't look AI-made: a real creative brief, reference matching from actual CSS, shadcn/ui, 21st.dev, Magic UI and React Bits used properly, a slop audit and human copy.",
+  "author": {
+    "name": "jojo"
+  },
   "license": "MIT",
-  "keywords": ["web-design", "frontend", "design", "copywriting"]
+  "keywords": [
+    "web-design",
+    "frontend",
+    "design",
+    "copywriting",
+    "shadcn",
+    "21st-dev",
+    "magic-ui",
+    "react-bits"
+  ]
 }

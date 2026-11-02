@@ -20,6 +20,8 @@ Open the page in a browser at desktop and phone width and read its CSS and copy.
 - Sections fading and sliding up identically on scroll
 - Emoji as icons or in headings
 - Stock or generated images standing in for the real product
+- Untouched component library defaults: stock shadcn cards, buttons and radius, or an effect that looks exactly like its demo page
+- Several library effects stacked on one screen, like beam, shimmer, particles and spotlight together
 
 ## Copy tells
 
@@ -35,6 +37,7 @@ Open the page in a browser at desktop and phone width and read its CSS and copy.
 - Replace a card row with the layout this content actually wants.
 - Delete any number that can't be verified. Render it as unfinished rather than inventing it.
 - Keep one signature detail, and remove competing effects.
+- Retune library components to the site with the `components` skill.
 - Hand copy problems to the `human-copy` skill.
 
 Finish with a before and after screenshot of the biggest change. Don't call it fixed until you've looked at it.
