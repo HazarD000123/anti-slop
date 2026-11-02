@@ -9,7 +9,7 @@ Written with `/anti-slop:brief`.
 - Wing `#efe2cc`, paper-thin cream lit from one side
 - Lamp `#ffb454`, the one accent, and it's literally the only light source
 
-**Fonts:** Fraunces for anything with a voice, soft and slightly strange at huge sizes. Inter for anything that should disappear.
+**Font:** Satoshi throughout. The swarm is the personality, so the type stays clean and quiet.
 
 **Signature detail:** the swarm. Hundreds of moths around one lamp, re-forming as you scroll to show what the bot does. Everything else stays quiet.
 
