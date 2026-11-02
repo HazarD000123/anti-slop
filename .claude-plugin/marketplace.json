@@ -1,0 +1,11 @@
+{
+  "name": "anti-slop",
+  "owner": { "name": "jojo" },
+  "plugins": [
+    {
+      "name": "anti-slop",
+      "source": "./",
+      "description": "Build websites with Claude that don't look AI-made."
+    }
+  ]
+}

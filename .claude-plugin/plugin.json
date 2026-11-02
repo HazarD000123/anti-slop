@@ -1,0 +1,8 @@
+{
+  "name": "anti-slop",
+  "version": "0.1.0",
+  "description": "Build websites with Claude that don't look AI-made: a real creative brief, reference matching from actual CSS, a slop audit and human copy.",
+  "author": { "name": "jojo" },
+  "license": "MIT",
+  "keywords": ["web-design", "frontend", "design", "copywriting"]
+}

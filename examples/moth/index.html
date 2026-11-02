@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moth, the discord bot that stays up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,100,1;1,9..144,300..700,100,1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--room:#0a0705;--wing:#efe2cc;--lamp:#ffb454;--dim:#a4937c}
+*{margin:0;box-sizing:border-box}
+html{background:var(--room);scrollbar-width:none}
+html::-webkit-scrollbar{display:none}
+body{color:var(--wing);font-family:Inter,system-ui,sans-serif;background:var(--room);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+#grain{position:fixed;inset:0;pointer-events:none;opacity:.09;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+#vig{position:fixed;inset:0;pointer-events:none;background:linear-gradient(transparent 52%,rgba(8,5,3,.72) 74%,rgba(8,5,3,.9)),radial-gradient(120% 70% at 50% 42%,transparent 40%,rgba(5,3,2,.82) 100%)}
+header{position:fixed;left:0;right:0;top:0;padding:22px 24px;display:flex;justify-content:space-between;align-items:center;z-index:5;font-size:14px;color:var(--dim)}
+header b{font:italic 400 24px Fraunces,serif;color:var(--wing)}
+header a{color:var(--wing);text-decoration:none;border-bottom:1px solid rgba(239,226,204,.35);padding-bottom:2px}
+main{position:relative;z-index:2}
+section{min-height:115vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 24px 13vh;max-width:760px}
+.hero{min-height:100vh;justify-content:flex-end;padding-bottom:9vh}
+h1{font:italic 300 clamp(150px,44vw,420px)/.8 Fraunces,serif;letter-spacing:-.055em;font-variation-settings:"SOFT" 100,"WONK" 1;margin-left:-.05em;text-shadow:0 0 90px rgba(255,180,84,.34)}
+.tag{font:300 clamp(30px,8vw,52px)/1.06 Fraunces,serif;letter-spacing:-.025em;margin-top:22px;max-width:13em}
+.small{margin-top:16px;color:var(--dim);font-size:16px;line-height:1.5;max-width:26em}
+.n{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--lamp);margin-bottom:16px}
+h2{font:italic 300 clamp(62px,17vw,132px)/.92 Fraunces,serif;letter-spacing:-.045em;font-variation-settings:"SOFT" 100,"WONK" 1;text-shadow:0 2px 40px rgba(10,7,5,.8)}
+section p{margin-top:18px;font-size:18px;line-height:1.5;color:#cdbea8;max-width:24em;text-shadow:0 1px 18px var(--room)}
+.end{align-items:flex-start;padding-bottom:18vh;min-height:125vh}
+.go{display:inline-block;margin-top:30px;background:var(--lamp);color:#1a0f04;font-weight:500;font-size:18px;padding:17px 30px;border-radius:7px;text-decoration:none;box-shadow:0 0 70px rgba(255,180,84,.45)}
+.need{display:block;margin-top:14px;font-size:13px;color:var(--dim)}
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.rv.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{transition:opacity .3s;transform:none}}
+</style>
+<script type="importmap">{"imports":{"three":"./three.module.js"}}</script>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas><div id="vig"></div><div id="grain"></div>
+<header><b>Moth</b><a href="#in">Let it in</a></header>
+<main>
+  <section class="hero"><h1>Moth</h1><div class="tag">the discord bot that stays up.</div><div class="small">Moderation, music and reminders, while you sleep.</div></section>
+  <section><div class="n rv">Moderation</div><h2 class="rv">It watches the door.</h2><p class="rv">Spam and raids get handled at 3am, with a log you can read in the morning.</p></section>
+  <section><div class="n rv">Music</div><h2 class="rv">It keeps the room playing.</h2><p class="rv">Queue something in voice and get back to your friends.</p></section>
+  <section><div class="n rv">Reminders</div><h2 class="rv">It remembers for you.</h2><p class="rv">Tell it when. It pings you then, in plain language.</p></section>
+  <section class="end" id="in"><h2 class="rv">Leave a light on.</h2><a class="go rv" href="#">Add Moth to Discord</a><span class="need rv">Invite link goes here before launch.</span></section>
+</main>
+<script type="module">
+import * as THREE from 'three';
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const canvas = document.getElementById('gl');
+const r = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+r.setPixelRatio(Math.min(devicePixelRatio, 2.5));
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x0a0705);
+const cam = new THREE.PerspectiveCamera(46, 1, .05, 80);
+const LAMP = new THREE.Vector3(0, .9, 0);
+
+// shortcut: fixed swarm size, lower it if phones struggle
+const N = 1400;
+const wing = new THREE.BufferGeometry();
+// two wings from a shared body line; side = -1/1 lets the shader hinge each one
+const P = [[0,.0],[.62,.34],[.86,.06],[.5,-.2],[.62,-.52],[.2,-.5],[0,-.3]];
+const pos = [], side = [];
+for (const s of [-1, 1]) for (let i = 1; i < P.length - 1; i++)
+  for (const q of [P[0], P[i], P[i + 1]]) { pos.push(Math.abs(q[0]), q[1], 0); side.push(s); }
+wing.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+wing.setAttribute('side', new THREE.Float32BufferAttribute(side, 1));
+const inst = new THREE.InstancedBufferGeometry().copy(wing); inst.instanceCount = N;
+const seed = new Float32Array(N * 4);
+for (let i = 0; i < N; i++) { seed[i*4] = i / N; seed[i*4+1] = Math.random(); seed[i*4+2] = Math.random(); seed[i*4+3] = Math.random(); }
+inst.setAttribute('seed', new THREE.InstancedBufferAttribute(seed, 4));
+const mat = new THREE.ShaderMaterial({
+  side: THREE.DoubleSide, transparent: true, depthWrite: false,
+  uniforms: { t: { value: 0 }, f1: { value: 0 }, f2: { value: 0 }, f3: { value: 0 }, f4: { value: 0 }, lamp: { value: LAMP } },
+  vertexShader: `
+    attribute float side; attribute vec4 seed; uniform float t,f1,f2,f3,f4; uniform vec3 lamp;
+    varying float vLit; varying float vRim; varying vec2 vUv;
+    const float PI=3.14159265;
+    mat3 rotY(float a){float c=cos(a),s=sin(a);return mat3(c,0.,-s,0.,1.,0.,s,0.,c);}
+    mat3 rotX(float a){float c=cos(a),s=sin(a);return mat3(1.,0.,0.,0.,c,s,0.,-s,c);}
+    vec3 swarm(float tt){ float R=.75+2.9*pow(seed.y,1.4); float a=seed.z*2.*PI+tt*(.35+.8*seed.w)/(.55+R*.4)*(seed.x>.5?1.:-1.);
+      float b=seed.w*2.*PI+tt*.5*seed.y; vec3 p=vec3(cos(a)*R,sin(b)*R*.62+sin(tt*1.7+seed.z*20.)*.1,sin(a)*R); return rotX(seed.y*1.5-.75)*p+lamp; }
+    vec3 dome(float tt){ float i=seed.x*${N}.; float ph=acos(1.-1.75*seed.x); float th=i*2.39996+tt*.09; float R=2.75+sin(tt*1.5+i)*.035;
+      return lamp+vec3(sin(ph)*cos(th),cos(ph),sin(ph)*sin(th))*R; }
+    vec3 wave(float tt){ float ring=floor(seed.y*9.); float R=.75+ring*.52; float a=seed.z*2.*PI+tt*.1*(ring+1.);
+      float amp=.62*sin(R*2.6-tt*3.4); return lamp+vec3(cos(a)*R,amp*exp(-R*.14)-.75,sin(a)*R); }
+    vec3 clock(float tt){ float s=seed.x; vec3 p;
+      if(s<.56){ float a=s/.56*2.*PI; p=vec3(cos(a),sin(a),0.)*(2.45+seed.y*.13); }
+      else if(s<.74){ float k=floor((s-.56)/.18*12.)/12.*2.*PI; p=vec3(cos(k),sin(k),0.)*(1.95+seed.y*.36); }
+      else if(s<.88){ float a=PI*.5-tt*.33; p=vec3(cos(a),sin(a),0.)*(seed.y*1.72); }
+      else { float a=PI*.5-tt*.04+1.05; p=vec3(cos(a),sin(a),0.)*(seed.y*1.15); }
+      return p+vec3((seed.z-.5)*.09,(seed.w-.5)*.09,(seed.y-.5)*.4)+lamp; }
+    vec3 place(float tt){ vec3 p=swarm(tt); p=mix(p,dome(tt),f1); p=mix(p,wave(tt),f2); p=mix(p,clock(tt),f3); p=mix(p,swarm(tt*1.5),f4); return p; }
+    void main(){
+      float stagger=seed.w*.6; float tt=t;
+      vec3 c=place(tt); vec3 n=place(tt+.03); vec3 fw=normalize(n-c+1e-4);
+      vec3 up=normalize(vec3(fw.z*.3,1.,-fw.x*.3)); vec3 rt=normalize(cross(fw,up)); up=cross(rt,fw);
+      float flap=sin(t*(17.+seed.y*12.)+seed.z*40.)*.95+.25;
+      float size=(.058+.075*seed.z);
+      vec3 lp=position; float hinge=flap*side;
+      vec3 w=vec3(side*lp.x*cos(flap),lp.x*sin(flap),lp.y);
+      vec3 world=c+(rt*w.x+up*w.y+fw*w.z)*size;
+      vec3 toL=lamp-world; float d=length(toL);
+      vLit=1./(.26+d*d*.17);
+      vRim=lp.x;
+      gl_Position=projectionMatrix*viewMatrix*vec4(world,1.);
+    }`,
+  fragmentShader: `
+    varying float vLit; varying float vRim;
+    void main(){
+      vec3 cream=vec3(.937,.886,.8), amber=vec3(1.,.66,.28);
+      vec3 col=mix(cream,amber,clamp(.45+vRim*.55,0.,1.))*clamp(vLit,.04,2.1);
+      gl_FragColor=vec4(col,clamp(.28+vLit*.9,.0,1.));
+      #include <colorspace_fragment>
+    }`
+});
+const swarm = new THREE.Mesh(inst, mat); swarm.frustumCulled = false; scene.add(swarm);
+
+function glowTex(stops) {
+  const c = document.createElement('canvas'); c.width = c.height = 512; const g = c.getContext('2d');
+  const rg = g.createRadialGradient(256, 256, 0, 256, 256, 256); stops.forEach(([o, col]) => rg.addColorStop(o, col));
+  g.fillStyle = rg; g.fillRect(0, 0, 512, 512); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const spr = (tex, s, o = 1) => { const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: o })); m.scale.setScalar(s); m.position.copy(LAMP); scene.add(m); return m; };
+const halo = spr(glowTex([[0, 'rgba(255,190,110,.62)'], [.14, 'rgba(255,160,70,.3)'], [.42, 'rgba(180,90,30,.09)'], [1, 'rgba(0,0,0,0)']]), 15);
+const core = spr(glowTex([[0, 'rgba(255,250,235,1)'], [.1, 'rgba(255,226,170,.95)'], [.32, 'rgba(255,170,80,.34)'], [1, 'rgba(0,0,0,0)']]), 2.1);
+// the bulb on its cord: real geometry so the camera has something to pass
+const bulb = new THREE.Mesh(new THREE.SphereGeometry(.17, 32, 24), new THREE.MeshBasicMaterial({ color: 0xfff1d6 })); bulb.position.copy(LAMP); scene.add(bulb);
+const cord = new THREE.Mesh(new THREE.CylinderGeometry(.007, .007, 14, 8), new THREE.MeshBasicMaterial({ color: 0x241810 })); cord.position.set(0, LAMP.y + 7.15, 0); scene.add(cord);
+// dust drifting through the light
+const DN = 700, dp = new Float32Array(DN * 3); for (let i = 0; i < DN * 3; i += 3) { dp[i] = (Math.random() - .5) * 14; dp[i+1] = (Math.random() - .5) * 11; dp[i+2] = (Math.random() - .5) * 14; }
+const dg = new THREE.BufferGeometry(); dg.setAttribute('position', new THREE.BufferAttribute(dp, 3));
+const dust = new THREE.Points(dg, new THREE.PointsMaterial({ color: 0xffc98a, size: .022, transparent: true, opacity: .36, blending: THREE.AdditiveBlending, depthWrite: false })); scene.add(dust);
+
+function size() { const w = innerWidth, h = innerHeight; r.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); }
+addEventListener('resize', size); size();
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }), { threshold: .2 });
+document.querySelectorAll('.rv').forEach(e => io.observe(e));
+
+const sm = (a, b, x) => { const u = Math.max(0, Math.min(1, (x - a) / (b - a))); return u * u * (3 - 2 * u); };
+let p = 0;
+function frame(ms) {
+  const t = ms / 1000 * (reduce ? .25 : 1);
+  const max = document.documentElement.scrollHeight - innerHeight;
+  const target = max > 0 ? scrollY / max : 0; p += (target - p) * .085;
+  const u = mat.uniforms;
+  u.t.value = t;
+  u.f1.value = sm(.1, .24, p) * (1 - sm(.33, .46, p));
+  u.f2.value = sm(.36, .48, p) * (1 - sm(.58, .7, p));
+  u.f3.value = sm(.6, .72, p) * (1 - sm(.84, .93, p));
+  u.f4.value = sm(.86, 1, p);
+  const travel = reduce ? 0 : 1;
+  const a = -.22 + p * 2.4 * travel;
+  // the clock faces the camera, so the orbit straightens out for it; the waves are watched from above
+  const face = sm(.6, .72, p) * (1 - sm(.84, .93, p));
+  const above = sm(.36, .48, p) * (1 - sm(.58, .7, p));
+  const fit = Math.max(1, .62 / cam.aspect); // a phone needs more distance to fit the clock's width
+  const R = (8.6 - 2.1 * sm(0, .24, p) * (1 - face) * (1 - above) + 3.2 * face * fit + 1.1 * above - 1.4 * sm(.88, 1, p)) * (reduce ? 1 : 1);
+  const az = a * (1 - face);
+  cam.position.set(Math.sin(az) * R, LAMP.y + .25 + Math.sin(p * 6) * .5 * (1 - face) * (1 - above) + 5.4 * above + 1.6 * face * 0, Math.cos(az) * R);
+  cam.lookAt(LAMP.x, LAMP.y - .55 * (1 - sm(0, .12, p)) - 2.6 * face - 1.5 * above - .8 * sm(.88, 1, p), LAMP.z);
+  const fl = 1 + Math.sin(t * 11) * .012 + Math.sin(t * 29) * .008;
+  halo.scale.setScalar(15 * fl * (1 + .6 * sm(.88, 1, p))); core.scale.setScalar(2.1 * fl);
+  dust.rotation.y = t * .012; dust.position.y = Math.sin(t * .1) * .2;
+  r.render(scene, cam);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
