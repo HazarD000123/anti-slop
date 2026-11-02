@@ -44,7 +44,7 @@ Techniques, with code: `references/techniques.md`. Asset compression and loading
 
 Big tight sans headlines (`-0.05em`, 90px, Inter or system-ui) are the most AI-looking thing you can put on one of these sites. Here the world is the headline.
 
-- One characterful typeface, self-hosted, 10 to 13px, placed at the corners and edges.
+- One well-chosen typeface, such as Satoshi (Fontshare), at a modest, readable size: about 30 to 36px for titles and 15px for body. Not a monospace just to look technical.
 - A custom wordmark drawn as SVG, not typed in a font.
 - One small invented system that belongs to this site and no other, such as a live readout of something real, marks, numbering, or a way text arrives. Don't copy igloo's or the starter's: the starter's camera readout and registration marks are examples to replace.
 - Screen readers must get the real text, including while it animates.

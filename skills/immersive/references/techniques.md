@@ -37,7 +37,7 @@ Add procedural noise to normals and colour in the fragment shader via `onBeforeC
 
 ## Type in WebGL
 
-Only when the effects need it. igloo draws its UI in WebGL so glitch and scramble effects don't cause layout work. MSDF text via `troika-three-text` is the practical route. Keep real HTML underneath either way. The starter uses HTML with a JS decode, which is enough for most sites.
+Only when the effects need it. igloo draws its UI in WebGL so glitch and scramble effects don't cause layout work. MSDF text via `troika-three-text` is the practical route. Keep real HTML underneath either way. The starter uses plain HTML with a small reveal, which is enough for most sites.
 
 ## Sound
 

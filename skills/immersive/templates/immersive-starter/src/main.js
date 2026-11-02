@@ -4,7 +4,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { EffectComposer, RenderPass, EffectPass, BloomEffect, ChromaticAberrationEffect, NoiseEffect, VignetteEffect, BlendFunction } from 'postprocessing';
-import '@fontsource-variable/martian-mono/wdth.css';
 import './style.css';
 import { terrainHeight } from './noise.js';
 import { skyShader, crystalShader, particleShader } from './shaders.js';
@@ -118,19 +117,7 @@ tl.to(rig, { x: 6.5, y: HERO.y + 1.2, z: 7.5, ty: HERO.y, duration: 3 })
   .to(rig, { x: 0, y: HERO.y + 22, z: 15, tx: 0, ty: HERO.y + 6.4, duration: 2.1 }, '<');
 
 // --- content reveals, sound, pointer ---
-// text decodes in: type is part of the world, and a11y keeps the real string in the DOM from the start
-const GLYPHS = '/\\\\|_-+:.#';
-function decode(el) {
-  if (reduce || el.children.length) return;
-  const txt = el.textContent, t0 = performance.now(), D = Math.min(900, 260 + txt.length * 16);
-  el.setAttribute('aria-label', txt);
-  (function step(n) {
-    const u = (n - t0) / D, shown = Math.floor(u * txt.length);
-    el.textContent = txt.split('').map((c, i) => i < shown || c === ' ' ? c : GLYPHS[(i * 7 + Math.floor(n / 45)) % GLYPHS.length]).join('');
-    if (u < 1) requestAnimationFrame(step); else { el.textContent = txt; el.removeAttribute('aria-label'); }
-  })(t0);
-}
-const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('on'); decode(e.target); io.unobserve(e.target); } }), { threshold: .2 });
+const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }), { threshold: .2 });
 document.querySelectorAll('.rv').forEach((e) => io.observe(e));
 const ptr = new THREE.Vector2(0, 0); addEventListener('pointermove', (e) => { ptr.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight * 2 - 1)); });
 
