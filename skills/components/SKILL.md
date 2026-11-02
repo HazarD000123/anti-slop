@@ -15,7 +15,7 @@ Never make UI from scratch when a good component exists, and never ship one look
 | Find | 21st.dev | Search real community components when you know the feel but not the name. |
 | Effects | React Bits, Magic UI, Aceternity UI | The signature moment: animated text, beams, backgrounds, docks. |
 | Motion | Motion, GSAP | Reveals, layout animation, timelines, scroll. |
-| 3D | three.js, React Three Fiber, OGL | Only when 3D is the signature detail. |
+| 3D | three.js, React Three Fiber, OGL | When 3D is the signature detail. A whole 3D world: use `immersive`. |
 | Icons | lucide | One icon set per site. |
 
 Details and exact commands: `references/libraries.md`.

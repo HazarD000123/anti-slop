@@ -16,6 +16,7 @@ Open the page in a browser at desktop and phone width and read its CSS and copy.
 - Glassmorphism, glow or gradient blobs used everywhere instead of once
 - Two side-by-side "get started" and "learn more" buttons on every section
 - Default font alone, with no second voice
+- Huge tight-tracked sans headlines (`tracking-tighter`, Inter or system-ui) as the whole design idea
 - Pure `#000` or neutral grey where a tinted dark would fit
 - Sections fading and sliding up identically on scroll
 - Emoji as icons or in headings
